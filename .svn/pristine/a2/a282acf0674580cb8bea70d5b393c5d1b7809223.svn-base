@@ -1,0 +1,23 @@
+//
+//  SearchViewController.h
+//  CIBSafeBrowser
+//
+//  Created by cib on 15/3/10.
+//  Copyright (c) 2015年 cib. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+#import "MainViewController.h"
+
+static NSString *kAppNoOfSearchedUser = @"-9999";
+
+@interface SearchViewController : UIViewController
+
+@property (strong, nonatomic) IBOutlet UITextField *searchTextField; // 搜索框
+@property (strong, nonatomic) IBOutlet UIButton *cancelButton; // 取消按钮
+@property (strong, nonatomic) IBOutlet UITableView *resultTableView; // 结果列表
+
+@property(nonatomic, assign) MainViewControllerState mainViewPreState;
+
+@end

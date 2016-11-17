@@ -1,0 +1,13 @@
+//
+//  SecureViewController.h
+//  CIBSafeBrowser
+//
+//  Created by wangzw on 15/12/8.
+//  Copyright © 2015年 cib. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+@interface SecureViewController : UIViewController
+
+@end

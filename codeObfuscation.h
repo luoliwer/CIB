@@ -1,0 +1,51 @@
+#ifndef Demo_codeObfuscation_h
+#define Demo_codeObfuscation_h
+//confuse string at Thu Aug  6 13:47:39 CST 2015
+#define showLockViewController UHTyMFgbOiscBTji
+#define onSucceeded cEWcZjKAgjypvwEF
+#define onFailed TiRdXmGAfRpEALDU
+#define registerPushServiceToAppServerWithDeviceToken GbzhZRTiVceNsCAN
+#define updateResourceFileInfo LsuRQUfztEHKKVKD
+#define getAppProductList CwKfBYlXELJeClEu
+#define setAppProductList CtZlnRpsmvmuvhNp
+#define setPasswordString BiPXEVaSaMkLjqio
+#define showErrorCircles NeeuHyeaxTedwVGM
+#define clearColorAndSelectedButton lCLlDlUXccEBsXGQ
+#define initWithType lFpuniZpfuXZcEug
+#define imageWithImage TshyEFQqjKQjvQdu
+#define scaledToSize xdoyMFLUkVZhItrI
+#define propertyOfResource dABACOGXbcMPnYvK
+#define isNetworkAvailable AneOnbHAwJaoFPGL
+#define isNetworkAvailableInView snaqwtBaVfoWiLkt
+#define isWifiAvailable YhTGqEEChhokYJra
+#define isSystemVersionBelowEight bYuNuArZAggPzabz
+#define MD5Digest gHVItSGYvNCJKFOO
+#define screenShotFromView YfPwGAzYeVyiIlRD
+#define drawLinearGradientImageFromColors jCnKUNDOQzmIsfFF
+#define createImageWithColor yWcQlGfzAsbfDqGO
+#define combineURLWithBaseURL ruLJxYoWJnVrPLVI
+#define andRelativeURL aqrKhWdHyhodouOV
+#define generateRSAKeyPairInDir gQWpTDHtvwOVdVTq
+#define generateX509ReqInDir mCEfhtMLmckqjVIb
+#define generateP12InDir mOVwbgOvoFUTEltQ
+#define isP12ExistInDir WUzkopnYXSmLtZBx
+#define defaultCertDir agDUmasVWQPrcqKP
+#define getAppList aRaIpxYBmfnmVtFD
+#define updateAppInfo HjjOBQuISMMXXykX
+#define insertAppInfos RGoTjdDrDZBgFbId
+#define getUpdateTimeByName xzwrNwRzsBDJDrcm
+#define updateUpdateTimeByName jLhZkVCnFKEPccFv
+#define isFileExist PEsSBNmgGhAovYnb
+#define getFileList KyeeXbtpLhpzVbLP
+#define insertFileInfo weIEjhLShWLTPzpM
+#define deleteFileInfoByAlias VrKaslQoyJsLKZfn
+#define resetData PPITxixgUHXfEdOG
+#define lastUserId dLRbKCYBTKNiMuST
+#define setLastUserId yGGsKApITkXitLwI
+#define getAppProductByAppNo YBHscWitPWRrlxoh
+#define migrateAppInfoToCipher mjljUjiuQGNbpuaC
+#define readLocalFileResourceToCache HTJAwDKhJgRXogQd
+#define andCertificate BjlxhZffZuOYdMqM
+#define fromPKCS12Data kDEaXQjApSvfXApd
+#define reloadFavors gmzgcXIuMzEDXTjJ
+#endif

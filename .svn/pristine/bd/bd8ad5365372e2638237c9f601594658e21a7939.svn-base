@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>日历</key>
+	<string>ic_schedule</string>
+	<key>资金报价</key>
+	<string>ic_quoted price</string>
+	<key>指标</key>
+	<string>ic_quota</string>
+	<key>财务报销</key>
+	<string>ic_reimbursement</string>
+	<key>风险信息</key>
+	<string>ic_riskcontrol</string>
+	<key>零售个贷</key>
+	<string>ic_gedaishenpi</string>
+	<key>个人征信</key>
+	<string>ic_creditinquiry</string>
+</dict>
+</plist>

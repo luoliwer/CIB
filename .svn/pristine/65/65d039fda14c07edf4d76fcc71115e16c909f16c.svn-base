@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CacheExpire</key>
+	<real>86400</real>
+	<key>BaseUrl</key>
+	<string>https://sea.cib.com.cn:443/openapi/</string>
+	<key>HttpAddrList</key>
+	<array>
+		<string>http://168.3.23.207:7052/openapi</string>
+		<string>http://220.250.30.210:8052/openapi/</string>
+	</array>
+	<key>ProxyList</key>
+	<array>
+		<string>https://sea.cib.com.cn:448</string>
+		<string>https://168.3.23.207:7051</string>
+		<string>https://220.250.30.210:8051</string>
+	</array>
+	<key>IconUpdateInterval</key>
+	<integer>86400</integer>
+	<key>LockInterval</key>
+	<integer>300</integer>
+	<key>UpdateTimeInterval</key>
+	<real>86400</real>
+	<key>LoadDataInterval</key>
+	<integer>86400</integer>
+	<key>ResourceFileUpdateInterval</key>
+	<real>86400</real>
+	<key>UseSafeKeyboard</key>
+	<true/>
+</dict>
+</plist>

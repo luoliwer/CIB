@@ -1,0 +1,66 @@
+//
+//  config.h
+//  CIBSafeBrowser
+//
+//  Created by cib on 15/1/5.
+//  Copyright (c) 2015年 cib. All rights reserved.
+//
+
+#ifndef CIBSafeBrowser_config_h
+#define CIBSafeBrowser_config_h
+
+//#define CIBDEBUG
+#ifdef CIBDEBUG
+#define CIBLog(format, ...) NSLog(format, ## __VA_ARGS__)
+#else
+#define CIBLog(format, ...)
+#endif
+#define kUIColorLight [UIColor colorWithRed:18.0/255.0 green:119.0/255.0 blue:211.0/255.0 alpha:1.0]
+#define kUIColorDark [UIColor colorWithRed:26.0/255.0 green:72.0/255.0 blue:134.0/255.0 alpha:1.0]
+#define kKeyOfDeviceToken @"DeviceToken"
+#define kKeyOfUnreadMsgNumber @"UnreadMsgNumber"
+#define kUnreadMsgNumberUpdatedNotification @"UnreadMsgNumberUpdatedNotification"
+
+//获取当前系统版本
+#define currentOSVersion [[[UIDevice currentDevice] systemVersion] floatValue]
+
+// 是否在生产环境下，连接测试环境外网的新闻和指标
+//#define USING_TEST_ENV_NEWS_QUOTA
+
+// websocket用户登录验证服务器地址，暂未使用
+#define kLoginServerURL @"http://168.3.23.190:8082/login.jsp"
+
+//用户名称和头像服务器地址 （已废弃）
+//#define kUserNameAndIconServerURL @"http://168.3.23.190:8082/user.jsp"
+//#define kUserNameAndIconServerURL @"https://220.250.30.210:7554/user.jsp?"
+
+// 选择测试环境内网/测试环境外网/生产环境
+//#define TEST_ENV_INNER
+//#define TEST_ENV_OUTER
+#define PROD_ENV
+
+#ifdef TEST_ENV_INNER
+
+// 下面三个地址分别是：websocket服务器地址，群相关接口地址，文件上传接口地址
+#define kWebSocketURL @"wss://168.3.23.190:7554/websocket/chat"
+#define kServerURL @"http://168.3.23.190:8083/group.jsp?"
+#define kUploadFileServerURL  @"http://168.3.23.207:7052/uploadFile/upload"
+
+#else
+#ifdef TEST_ENV_OUTER
+
+#define kWebSocketURL @"wss://220.250.30.210:7554/websocket/chat"
+#define kServerURL @"https://220.250.30.210:7554/group.jsp?"
+#define kUploadFileServerURL  @"http://220.250.30.210:8050/uploadFile/"
+
+#else
+
+#define kWebSocketURL @"wss://42.159.244.122:443/websocket/chat"
+#define kServerURL @"https://42.159.244.122:443/group.jsp?"
+#define kUploadFileServerURL  @"https://42.159.244.122:443/uploadFile/"
+
+#endif
+
+#endif
+
+#endif

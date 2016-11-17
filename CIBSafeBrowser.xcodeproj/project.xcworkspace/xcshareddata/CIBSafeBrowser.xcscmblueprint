@@ -1,0 +1,25 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "005ad44c-9860-7b4f-b458-bf42b4f8600b++9529",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "005ad44c-9860-7b4f-b458-bf42b4f8600b++9529" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "005ad44c-9860-7b4f-b458-bf42b4f8600b++9529" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "D4A3FA46-330B-40B2-9A39-405C9AC7C7F9",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "005ad44c-9860-7b4f-b458-bf42b4f8600b++9529" : "CIBSafeBrowser"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "CIBSafeBrowser",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "CIBSafeBrowser.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/168.7.61.7\/svn\/cib",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "005ad44c-9860-7b4f-b458-bf42b4f8600b++9529"
+    }
+  ]
+}

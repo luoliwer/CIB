@@ -1,0 +1,37 @@
+//
+//  MainViewController.h
+//  CIBSafeBrowser
+//
+//  Created by cib on 15/2/10.
+//  Copyright (c) 2015年 cib. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+typedef NS_ENUM(NSUInteger, MainViewControllerState)
+{
+    MainViewControllerStateRolled = 0,  // 搜索框在顶部
+    MainViewControllerStateStreched,  // 搜索框在中部,logo展开
+    MainViewControllerStateStreching,  // 正在展开
+    MainViewControllerStateRolling  // 正在收缩
+};
+typedef NS_ENUM(NSInteger, MainFromState) {
+    MainFromDefault,//初始状态
+    MainFromLoginSucc,//登录成功
+    MainFromActivationBack,//短信验证界面点击返回
+    MainFromActivationSucc,//短信验证界面面激活成功
+    MainFromSetAuthorSucc,//设置条线成功返回
+    MainFromLockSucc//设置手势密码或解锁手势密码
+};
+
+@interface MainViewController : UIViewController
+
+@property (strong, nonatomic) IBOutlet UIView *navigationBarView;
+@property (strong, nonatomic) IBOutlet UIView *searchContainerView;  // 搜索区
+
+@property(nonatomic, assign) MainViewControllerState mainViewState;
+@property(nonatomic, assign) MainFromState mainFromState;
+
+- (void)reloadFavorCollectionView; // 刷新收藏webapp
+- (void)loadCACertificate:(void(^)(BOOL ifSucc)) resultBlock toView:(UIView*) currView;
+@end

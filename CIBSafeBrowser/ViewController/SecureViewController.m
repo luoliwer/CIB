@@ -1,0 +1,287 @@
+//
+//  SecureViewController.m
+//  CIBSafeBrowser
+//
+//  Created by wangzw on 15/12/8.
+//  Copyright © 2015年 cib. All rights reserved.
+//
+
+#import "SecureViewController.h"
+
+#import "LoginViewController.h"
+#import "MainViewController.h"
+#import "SettingCell.h"
+#import "AppDelegate.h"
+#import "ImageAlertView.h"
+
+#import "MyUtils.h"
+#import "SecUtils.h"
+#import "Config.h"
+#import "CoreDataManager.h"
+
+#import <CIBBaseSDK/CIBBaseSDK.h>
+
+#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
+@interface SecureViewController ()<UITableViewDataSource,UITableViewDelegate,ImageAlertViewDelegate>
+@property (strong, nonatomic) IBOutlet UITableView *secureListTableView;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *moreConstraintHeight;
+
+@end
+
+@implementation SecureViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.view.backgroundColor = UIColorFromRGB(0xf1f2f6);
+    self.secureListTableView.tableFooterView = [[UIView alloc] init];
+    // Do any additional setup after loading the view.
+}
+
+#pragma mark - UITableViewDataSource
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 2;
+}
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"SettingPrototypeCell";
+    SettingCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    switch (indexPath.row) {
+        case 0:
+        {
+            cell.title.text = @"修改手势密码";
+            cell.detail.text = @"";
+            cell.icon.image = [UIImage imageNamed:@"security_gestures"];
+        }
+            break;
+        case 1:
+        {
+            cell.title.text = @"更换证书";
+            cell.detail.text = @"";
+            cell.icon.image = [UIImage imageNamed:@"cert"];
+        }
+            break;
+        default:
+            break;
+    }
+   
+    cell.moreConstraintWidth.constant= cell.moreBtn.image.size.width;
+    cell.moreConstraintHeight.constant=cell.moreBtn.image.size.height;
+    
+    cell.iconConstraintWidth.constant=cell.icon.image.size.width;
+    cell.iconConstraintHeight.constant=cell.icon.image.size.height;
+    return cell;
+}
+
+#pragma mark -UITableViewDelegate
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    switch (indexPath.row) {
+        case 0:
+        {
+//            self.view.window.rootViewController = self;
+            [[AppDelegate delegate] showLockViewController:LockViewTypeModify onSucceeded:nil onFailed:nil];
+        }
+            break;
+        case 1:
+            if ([MyUtils isNetworkAvailableInView:self.view]) {
+                [self loadCACertificate];
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+- (IBAction)backBtnPress:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+//  生成ssl通信证书
+- (void)loadCACertificate {
+    ImageAlertView *alertView = [[ImageAlertView alloc] initWithFrame:self.view.frame];
+    alertView.isHasBtn = NO;
+    [alertView viewShowWithImage:[UIImage imageNamed:@"ic_refresh"] message:@"正在请求证书"];
+    [self.view addSubview:alertView];
+    
+    // 新开线程生成证书
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        // 处理耗时操作的代码块...（生成证书）
+        NSString *certDir = [SecUtils defaultCertDir];
+        [SecUtils generateRSAKeyPairInDir:certDir];  // 创建密钥对
+        [SecUtils generateX509ReqInDir:certDir];  // 创建证书请求
+        
+        NSString *csrPath = [certDir stringByAppendingPathComponent:SecFileX509ReqPem];
+        NSString *csrString =  [[NSString alloc] initWithContentsOfFile:csrPath encoding:NSUTF8StringEncoding error:nil];
+        
+        // 线程完成时的操作，此处为请求服务器对证书进行签名
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            // 请求成功的回调函数
+            void(^succeededBlock)(NSString *, NSString *) = ^(NSString *responseCode, NSString *responseInfo) {
+                if ([responseCode isEqualToString:@"I00"] || [responseCode isEqualToString:@"0"]) {
+                    CIBLog(@"CA认证成功");
+                    [alertView removeFromSuperview];
+                    
+                    // 标记一下此时设备已经激活，可以打开WebApp
+                    [AppDelegate delegate].isActive = YES;
+                    
+                    // 此处应该往keychain中写入私钥信息
+                    NSString *priPath = [certDir stringByAppendingPathComponent:SecFilePriKeyPem];
+                    NSString *priKey = [NSString stringWithContentsOfFile:priPath encoding:NSUTF8StringEncoding error:nil];
+                    [AppInfoManager setValue:priKey forKey:kKeyOfBrowserPrivateKey];
+                    
+                    if (responseInfo == nil) {
+                        //[MyUtils showAlertWithTitle:@"证书内容为空" message:nil];
+                        [self failedLoadCACertificate];
+                        return;
+                    }
+                    else {
+                        NSError *error = nil;
+                        NSString *filePath = [certDir stringByAppendingPathComponent:SecFileX509Cert];
+                        NSString *decodeContent = [Function decodeFromPercentEscapeString:responseInfo];
+                        [decodeContent writeToFile:filePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+                        if (error == nil) {
+                            //hud.labelText = @"正在安装证书...";
+                            [SecUtils generateP12InDir:certDir];  // 合成p12文件
+                            
+                            // 更新证书更换时间
+                            CoreDataManager *cdManager = [[CoreDataManager alloc] init];
+                            [cdManager updateUpdateTimeByName:@"BrowserCert"];
+                            
+                            [self loadRecentCertUpdateInfo];
+                            [self.secureListTableView reloadData];// 更新UI
+                            
+                            ImageAlertView *alertView = [[ImageAlertView alloc] initWithFrame:self.view.frame];
+                            alertView.isHasBtn = NO;
+                            alertView.autoHideAfterSeconds = 1;
+                            [alertView viewShowWithImage:[UIImage imageNamed:@"ic_suc"] message:@"证书已更换"];
+                            [self.view addSubview:alertView];
+                        }
+                        else {
+                            //[hud removeFromSuperview];
+                            //[MyUtils showAlertWithTitle:error.localizedDescription message:nil];
+                            [self failedLoadCACertificate];
+                        }
+                    }
+                }
+                else {
+                    //[hud removeFromSuperview];
+                    [alertView removeFromSuperview];
+                    CIBLog(@"failed ,code = %@, info = %@", responseCode, responseInfo);
+                    //[MyUtils showAlertWithTitle:responseInfo message:nil];
+                    [self failedLoadCACertificate];
+                }
+            };
+            
+            // 请求失败的回调函数
+            void(^failedBlock)(NSString *, NSString *) = ^(NSString *responseCode, NSString *responseInfo) {
+                [alertView removeFromSuperview];
+                if ([responseCode isEqualToString:@"11"]) {
+//                    [MyUtils showAlertWithTitle:responseInfo message:nil];
+                    [self failedLoadCACertificate];
+                    
+                    // 标记一下此时设备未激活，不能打开WebApp
+                    [AppDelegate delegate].isActive = NO;
+                }
+                // 用户名密码N天未验证
+                else if ([responseCode isEqualToString:@"18"]) {
+                    //[MyUtils showAlertWithTitle:responseInfo message:nil autoHideAfterSeconds:1];
+                    
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        LoginViewController *loginVC = [[LoginViewController alloc] init];
+                        __block LoginViewController *loginVCBlock=loginVC;
+                        loginVC.loginSucceededBlock = ^(){
+                            self.loginSucceededBlock();
+                            [loginVCBlock dismissViewControllerAnimated:YES completion:nil];
+                        };
+                        [self presentViewController:loginVC animated:YES completion:nil];
+                    });
+                }
+                else {
+                    //[MyUtils showAlertWithTitle:responseInfo message:nil];
+                    [self failedLoadCACertificate];
+                }
+            };
+            
+            
+            @try {
+                //hud.labelText = @"服务器认证中...";
+                
+                NSString *isIntern = @"";
+                
+                // 测试配置
+                if ([[URLAddressManager getBasicURLAddress] rangeOfString:@"168.3.23.207"].location != NSNotFound) {
+                    isIntern = @"true";
+                }
+                
+                id paramDic = @{@"pkcs":[Function encodeToPercentEscapeString:csrString], @"isIntern":isIntern, @"days":@"365"};
+                NSString *URI = @"signCert";
+                [CIBRequestOperationManager invokeAPI:URI
+                                             byMethod:@"POST"
+                                       withParameters:paramDic
+                                   onRequestSucceeded:succeededBlock
+                                      onRequestFailed:failedBlock];
+            }
+            @catch (NSException *exception) {
+                [alertView removeFromSuperview];
+                
+                [MyUtils showAlertWithTitle:exception.description message:nil];
+            }
+            
+        });
+    });
+}
+
+// 获取浏览器证书更新时间
+- (NSString *)loadRecentCertUpdateInfo {
+    if (![SecUtils isP12ExistInDir:[SecUtils defaultCertDir]]) {
+        return @"证书不存在";
+    }
+    
+    // 获取浏览器证书更新时间
+    CoreDataManager *cdManager = [[CoreDataManager alloc] init];
+    double recentUpdateTime = [cdManager getUpdateTimeByName:@"BrowserCert"];
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"最近更换于: yyyy-MM-dd HH:mm"];
+    NSDate *detailDate = [NSDate dateWithTimeIntervalSince1970:recentUpdateTime];
+    NSString *timeStr = [formatter stringFromDate:detailDate];
+    
+    return timeStr;
+}
+
+- (void)failedLoadCACertificate
+{
+    ImageAlertView *alertView = [[ImageAlertView alloc] initWithFrame:self.view.frame];
+    alertView.isHasBtn = YES;
+    alertView.delegate = self;
+    [alertView viewShowWithImage:[UIImage imageNamed:@"ic_wrong"] message:@"请求失败"];
+    [self.view addSubview:alertView];
+}
+
+- (void)clickMyButtonIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 2) {
+        if ([MyUtils isNetworkAvailableInView:self.view]) {
+            [self loadCACertificate];
+        }
+    }
+}
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

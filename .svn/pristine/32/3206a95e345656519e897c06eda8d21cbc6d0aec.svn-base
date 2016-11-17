@@ -1,0 +1,32 @@
+//
+//  CustomWebViewController.h
+//  CIBSafeBrowser
+//
+//  Created by cib on 14/12/9.
+//  Copyright (c) 2014年 cib. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
+#import "DownloadFile.h"
+#import "SuperViewController.h"
+
+typedef enum {
+    CWRequestTypeWebApp,
+    CWRequestTypeLocalFile,
+    CWRequestTypeOther
+} CustomWebviewRequestType;
+
+@interface CustomWebViewController : SuperViewController
+
+@property (strong, nonatomic) IBOutlet UIWebView *webview;
+
+@property (nonatomic, strong) NSString *pageTitle;
+@property (nonatomic, strong) NSNumber *requestType;
+@property (nonatomic, strong) NSString *requestURL;
+@property (nonatomic, strong) DownloadFile *localFile;
+@property (nonatomic, strong) NSString *appno;
+@property (nonatomic, strong) NSString *iconUrl;
+
+@end
